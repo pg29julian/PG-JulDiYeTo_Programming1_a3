@@ -5,7 +5,6 @@ namespace A3
     public class Drink
     {
         Random rnd = new Random(); // Random generator
-        private string recipeName;
         private List<EIngredient> requiredIngredients = new List<EIngredient>(); // Ingredients required by the drink
         private List<EIngredient> fillRequiredIngredients = new List<EIngredient>(); // Ingredients put into the drink
 
@@ -16,15 +15,6 @@ namespace A3
         public Drink(Inventory inventory)
         {
             requiredIngredients = inventory.GetIngredients().OrderBy(x => rnd.Next()).Take(3).ToList();
-        }
-
-        /// <summary>
-        /// Returns recipe name
-        /// </summary>
-        /// <returns></returns>
-        public string GetRecipeName()
-        {
-            return recipeName;
         }
 
         /// <summary>
