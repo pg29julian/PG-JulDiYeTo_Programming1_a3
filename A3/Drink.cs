@@ -26,6 +26,14 @@ namespace A3
             return requiredIngredients;
         }
 
+        public void FillIngredients(EIngredient[] ingredients) // method for filling a drink with the ingredients selected by user
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                fillRequiredIngredients.Add(ingredients[i]);
+            }
+        }
+
         /// <summary>
         /// Check if the drink created is the drink ordered
         /// </summary>
