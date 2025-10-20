@@ -4,7 +4,7 @@ namespace A3
 {
     public class Drink
     {
-        Random rnd = new Random(); // Random generator
+        private Random rnd = new Random(); // Random generator
         private List<EIngredient> requiredIngredients = new List<EIngredient>(); // Ingredients required by the drink
         private List<EIngredient> fillRequiredIngredients = new List<EIngredient>(); // Ingredients put into the drink
 
@@ -18,19 +18,14 @@ namespace A3
         }
 
         /// <summary>
-        /// Returns required ingredients list
+        /// Fills a Drink with the given Ingredients
         /// </summary>
-        /// <returns></returns>
-        public List<EIngredient> GetRequiredIngredients()
+        /// <param name="ingredients"></param>
+        public void FillIngredients(List<EIngredient> ingredients)
         {
-            return requiredIngredients;
-        }
-
-        public void FillIngredients(EIngredient[] ingredients) // method for filling a drink with the ingredients selected by user
-        {
-            for (int i = 0; i < 3; i++)
+            foreach (var ingredient in ingredients)
             {
-                fillRequiredIngredients.Add(ingredients[i]);
+                fillRequiredIngredients.Add(ingredient);
             }
         }
 
@@ -42,6 +37,15 @@ namespace A3
         {
             if (fillRequiredIngredients.Count != requiredIngredients.Count) return false;
             return !requiredIngredients.Except(fillRequiredIngredients).Any();
+        }
+
+        /// <summary>
+        /// Returns required ingredients list
+        /// </summary>
+        /// <returns></returns>
+        public List<EIngredient> GetRequiredIngredients()
+        {
+            return requiredIngredients;
         }
     }
 }

@@ -2,58 +2,52 @@
 
 namespace A3
 {
-    /// <summary>
-    /// Handles the game's main components and flow
-    /// </summary>
     public class GameManager
     {
-        #region Variables
+        private Bartender bartender; // bartender instance
+        private Inventory inventory; // inventory instance
 
-        // The limit that marks the amount of angry customers a player can have before losing
-        private const int angryCustomerLimit = 5;
+        private const int angryCustomerLimit = 5; // The limit that marks the amount of angry customers a player can have before losing
+        private int angryCustomerCounter; // The current amount of angry customers a player has in their record
 
-        // The current amount of angry customers a player has in their record
-        private int angryCustomerCounter;
+        private bool isGameOver = false;
 
-        #endregion
-
-        #region Constructor
-
-        public GameManager() 
+        public GameManager()
         {
+            inventory = new Inventory();
+
+            var startingCustomers = new Customer[3];
+            for (int i = 0; i < startingCustomers.Length; i++)
+            {
+                startingCustomers[i] = new Customer(inventory);
+            }
+
+            bartender = new Bartender(startingCustomers);
+
             angryCustomerCounter = 0;
-        }
-
-        #endregion
-
-        #region Functions
-
-        /// <summary>
-        /// Adds a defined amount to the angry customer counter, can't be less or equal to 0
-        /// </summary>
-        /// <param name="angryCustomersToAdd"></param>
-        public void AddAngryCustomers(int angryCustomersToAdd)
-        {
-            if (angryCustomersToAdd <= 0) angryCustomersToAdd = 0;
-            angryCustomerCounter += angryCustomersToAdd;
         }
 
         /// <summary>
         /// Returns a new customer instance
         /// </summary>
         /// <returns></returns>
-        public Customer CreateCustomer()
+        public bool TryAddNewCustomer(int index)
         {
-            return new Customer();
-        }
+            bool bSucess = false;
 
-        /// <summary>
-        /// Returns a new Bartender instance
-        /// </summary>
-        /// <returns></returns>
-        public Bartender CreateBartender()
-        {
-            return new Bartender();
+            var customers = bartender.GetCustomers();
+
+            for (int i = 0; i < customers.Length; i++) 
+            {
+                if (!customers[i].GetIfInBar())
+                {
+                    bartender.ReplaceCustomer(new Customer(inventory), index);
+                    AddToAngryCustomers();
+                    bSucess = true;
+                }
+            }
+
+            return bSucess;
         }
 
         /// <summary>
@@ -61,12 +55,19 @@ namespace A3
         /// </summary>
         public void FireBartender()
         {
-
+            isGameOver = true;
         }
 
-        #endregion
-
         #region Utility Functions
+
+        /// <summary>
+        /// Adds a defined amount to the angry customer counter, can't be less or equal to 0
+        /// </summary>
+        /// <param name="angryCustomersToAdd"></param>
+        public void AddToAngryCustomers()
+        {
+            angryCustomerCounter += 1;
+        }
 
         /// <summary>
         /// Returns the Angry Customer Limit
@@ -92,6 +93,14 @@ namespace A3
         public void ResetAngryCustomerCounter()
         {
             angryCustomerCounter = 0;
+        }
+
+        /// <summary>
+        /// Returns true if game is over
+        /// </summary>
+        public bool GetGameOver()
+        {
+            return isGameOver;
         }
 
         #endregion

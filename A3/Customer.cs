@@ -2,38 +2,82 @@
 
 namespace A3
 {
+    /// <summary>
+    /// Customer class
+    /// </summary>
     public class Customer
     {
-        int _moodLevel;
-        Drink _order;
+        private int moodLevel;
+        private Drink order;
+        private bool inBar;
 
-        public Drink Order { get => _order; set => _order = value; }
-
-        public Customer() 
+        // Constructor
+        public Customer(Inventory inv) 
         {
-            _moodLevel = 3;
+            moodLevel = 3;
+            inBar = true;
+            order = new Drink(inv);
         }
 
-        public Drink OrderDrink(Inventory inv)
+        /// <summary>
+        /// Fills the Customer's order with the given indredients
+        /// </summary>
+        /// <param name="ingredients"></param>
+        public bool ReceiveDrink(List<EIngredient> ingredients)
         {
-            Order = new Drink(inv);
-            return Order;
-        }
+            // Customer will not receive a Drink if not in store
+            if (!inBar) return false;
 
-        public void ReceiveDrink(EIngredient[] ingredients)
-        {
-            _order.FillIngredients(ingredients); // _order drink is filled with the actual ingredients the bartender added
+            // Fill order's ingredients
+            order.FillIngredients(ingredients);
 
-            if (!_order.CheckDrink())
+            // Check if order's given ingredients are the actual correct ingredients
+            if (!order.CheckDrink())
             {
                 DecreaseMoodLevel();
-                Utils.PrintLn("You have delivered a bad drink to the customer", ETextColor.Red);
+                Utils.PrintLn("You have delivered a bad drink to the customer! :(", ETextColor.Red);
+                return false;
             }
+
+            Utils.PrintLn("You have delivered the correct order!", ETextColor.Green);
+            return true;
         }
 
+        /// <summary>
+        /// Decreases Customer's mood level
+        /// </summary>
         public void DecreaseMoodLevel()
         {
-            _moodLevel--;
+            moodLevel--;
+            if (moodLevel <= 0) inBar = false;
         }
+
+        #region Getters
+
+        /// <summary>
+        /// Returs Customer's mood level
+        /// </summary>
+        public int GetMoodLevel()
+        {
+            return moodLevel;
+        }
+
+        /// <summary>
+        /// Returns Customer's order
+        /// </summary>
+        public Drink GetOrder()
+        {
+            return order;
+        }
+
+        /// <summary>
+        /// Returns true if Customer is still in the bar
+        /// </summary>
+        public bool GetIfInBar()
+        {
+            return inBar;
+        }
+
+        #endregion
     }
 }

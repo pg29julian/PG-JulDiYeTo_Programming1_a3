@@ -6,6 +6,8 @@ namespace A3
     {
         static void Main(string[] args)
         {
+            GameManager gameManager = new GameManager();
+
 
         }
     }

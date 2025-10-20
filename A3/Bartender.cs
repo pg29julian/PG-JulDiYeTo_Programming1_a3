@@ -1,47 +1,78 @@
 ﻿using System;
+using System.Reflection;
 
 namespace A3
 {
     public class Bartender
     {
-        List<Customer> _customers;
-        EIngredient[] currentPreparation = new EIngredient[3];
+        private Customer[] customers = new Customer[3]; // List of customers in bar
 
-        public void MakeDrink(Inventory inv, UIManager ui)
+        private List<EIngredient> ingredientsBatch; // Actual ingredients batch
+        private Customer actualCustomer; // Actual customer to be served
+
+        // Constructor
+        public Bartender(Customer[] customers)
         {
-            Drink currentDrink = new Drink(inv);
-            EIngredient[] drinkMade = new EIngredient[3];
+            this.customers = customers;
+            ingredientsBatch = new List<EIngredient>();
+        }
 
-            for (int i = 0; i < 3; i++)
+        /// <summary>
+        /// Chooses the customer to serve
+        /// </summary>
+        public void SelectCustomer()
+        {
+            int selectedCustomer = Utils.Input("Select the customer", ETextColor.Blue, 1, 3);
+            actualCustomer = customers[selectedCustomer];
+        }
+
+        /// <summary>
+        /// Fills the ingredients batch with a new set of ingredients depending on the ordered drink
+        /// </summary>
+        /// <param name="orderedDrink"></param>
+        /// <param name="inventory"></param>
+        /// <param name="ui"></param>
+        public void MakeDrink(Drink orderedDrink, Inventory inventory, UIManager ui)
+        {
+            for (int i = 0; i < orderedDrink.GetRequiredIngredients().Count; i++) 
             {
                 ui.PrintMenu();
-                drinkMade[i] = (EIngredient)(Convert.ToInt16(Utils.Input("Select one item to add:", ETextColor.White)) - 1);
-
+                ingredientsBatch.Add(inventory.GetIngredient(Utils.Input("Select one ingredient to add", ETextColor.Blue, 1, 10)));
                 ui.PrintCup(i);
             }
-
-            currentPreparation = drinkMade;
         }
 
-        public void DeliverDrink()
+        /// <summary>
+        /// Delivers drink to customer
+        /// </summary>
+        /// <param name="ui"></param>
+        /// <returns></returns>
+        public bool DeliverDrink(UIManager ui)
         {
-            int selectedCustomer;
-            // IMPORTANTE
-            // Hay que añadir un método en la UI para mostrar los diferentes clientes
-            selectedCustomer = (Convert.ToInt16(Utils.Input("Select a customer to deliver this drink:", ETextColor.White)) - 1);
-            _customers[selectedCustomer].ReceiveDrink(currentPreparation);
-            RemoveCustomer(_customers[selectedCustomer]);
-            currentPreparation = null;
+            bool success = actualCustomer.ReceiveDrink(ingredientsBatch);
+
+            ingredientsBatch.Clear();
+
+            if (success) return true;
+            return false;
         }
 
-        public void ReceiveCustomer(Customer c)
+        /// <summary>
+        /// Replace an old customer with a new one
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="index"></param>
+        public void ReplaceCustomer(Customer customer, int index)
         {
-            _customers.Add(c);
+            customers[index] = customer;
         }
 
-        public void RemoveCustomer(Customer c)
+        /// <summary>
+        /// Return the customers
+        /// </summary>
+        public Customer[] GetCustomers()
         {
-            _customers.Remove(c);
+            return customers;
         }
     }
 }
