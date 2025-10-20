@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace A3
 {
@@ -7,8 +8,9 @@ namespace A3
         private Bartender bartender; // bartender instance
         private Inventory inventory; // inventory instance
 
+        private int score = 0;
         private const int angryCustomerLimit = 5; // The limit that marks the amount of angry customers a player can have before losing
-        private int angryCustomerCounter; // The current amount of angry customers a player has in their record
+        private int angryCustomerCounter = 0; // The current amount of angry customers a player has in their record
 
         private bool isGameOver = false;
 
@@ -23,8 +25,16 @@ namespace A3
             }
 
             bartender = new Bartender(startingCustomers);
+        }
 
-            angryCustomerCounter = 0;
+        /// <summary>
+        /// Core gameplay loop function
+        /// </summary>
+        public void GameLoop()
+        {
+            //while (true)
+            //{
+            //}
         }
 
         /// <summary>
@@ -50,6 +60,8 @@ namespace A3
             return bSucess;
         }
 
+        #region Utility Functions
+
         /// <summary>
         /// Fires the current Bartender instance
         /// </summary>
@@ -58,7 +70,21 @@ namespace A3
             isGameOver = true;
         }
 
-        #region Utility Functions
+        /// <summary>
+        /// Resets the current bartender
+        /// </summary>
+        public void ResetBartender()
+        {
+            var customers = bartender.GetCustomers();
+            for (int i = 0; i < customers.Length; i++)
+            {
+                bartender.ReplaceCustomer(new Customer(inventory), i);
+            }
+
+            isGameOver = false;
+            score = 0;
+            angryCustomerCounter = 0;
+        }
 
         /// <summary>
         /// Adds a defined amount to the angry customer counter, can't be less or equal to 0
@@ -88,11 +114,22 @@ namespace A3
         }
 
         /// <summary>
-        /// Resets the Angry Customer Counter
+        /// Adds the given value to score
         /// </summary>
-        public void ResetAngryCustomerCounter()
+        /// <param name="scoreToAdd"></param>
+        public void AddToScore(int scoreToAdd)
         {
-            angryCustomerCounter = 0;
+            if (scoreToAdd <= 0) scoreToAdd = 0;
+            score += score;
+        }
+
+        /// <summary>
+        /// Returns actual game score
+        /// </summary>
+        /// <returns></returns>
+        public int GetScore()
+        {
+            return score;
         }
 
         /// <summary>
