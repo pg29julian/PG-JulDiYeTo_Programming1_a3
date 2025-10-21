@@ -5,6 +5,33 @@ namespace A3
 {
     public class UIManager
     {
+        public void PrintInstruction()
+        {
+            Console.WriteLine($"""
+            ==============================================================================================
+                                                 INSTRUCTIONS
+            
+                     Congratulations on your new job as a bartender at the bar "The Happy Cup"!
+
+
+
+            Your goal is to serve drinks to your customers based on their recipe cards.
+
+            Each recipe card contains 3 ingredients that must be added to the cup in order to satisfy the 
+            customer, they will be appearing 3 at a time for 5 seconds. You have to select and memorize 
+            the ingredients for a recipe and then add them to the cup one by one to create the drink.
+
+            Each customer has a mood level that will be affected by how well you serve them.
+
+            If 3 customers leave angry, you'll be fired!
+
+            ==============================================================================================
+
+            Press ENTER to start the game...
+
+            """);
+        }
+
         /// <summary>
         /// Helper method that prints the ingredient selection menu
         /// </summary>
