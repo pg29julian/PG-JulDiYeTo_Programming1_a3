@@ -11,7 +11,6 @@ namespace A3
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="inventory"></param>
         public Drink(Inventory inventory)
         {
             requiredIngredients = inventory.GetIngredients().OrderBy(x => rnd.Next()).Take(3).ToList();
@@ -20,7 +19,6 @@ namespace A3
         /// <summary>
         /// Fills a Drink with the given Ingredients
         /// </summary>
-        /// <param name="ingredients"></param>
         public void FillIngredients(List<EIngredient> ingredients)
         {
             foreach (var ingredient in ingredients)
@@ -32,7 +30,6 @@ namespace A3
         /// <summary>
         /// Check if the drink created is the drink ordered
         /// </summary>
-        /// <returns></returns>
         public bool CheckDrink()
         {
             if (fillRequiredIngredients.Count != requiredIngredients.Count) return false;
@@ -42,7 +39,6 @@ namespace A3
         /// <summary>
         /// Returns required ingredients list
         /// </summary>
-        /// <returns></returns>
         public List<EIngredient> GetRequiredIngredients()
         {
             return requiredIngredients;

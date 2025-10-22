@@ -85,7 +85,7 @@ namespace A3
         /// <returns></returns>
         public static int Input(string text, ETextColor color, int minRange = -1, int maxRange = -1)
         {
-            int newInput = 0;
+            int newInput;
 
             do
             {
@@ -124,7 +124,7 @@ namespace A3
         /// <returns></returns>
         public static string Input(string text, ETextColor color)
         {
-            string newInput = "";
+            string newInput;
 
             do
             {

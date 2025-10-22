@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace A3
 {
     /// <summary>
@@ -10,24 +9,22 @@ namespace A3
         private int moodLevel;
         private Drink order;
         private bool inBar;
+        private bool successfullyServed;
 
         // Constructor
         public Customer(Inventory inv) 
         {
             moodLevel = 3;
             inBar = true;
+            successfullyServed = false;
             order = new Drink(inv);
         }
 
         /// <summary>
         /// Fills the Customer's order with the given indredients
         /// </summary>
-        /// <param name="ingredients"></param>
         public bool ReceiveDrink(List<EIngredient> ingredients)
         {
-            // Customer will not receive a Drink if not in store
-            if (!inBar) return false;
-
             // Fill order's ingredients
             order.FillIngredients(ingredients);
 
@@ -40,6 +37,8 @@ namespace A3
             }
 
             Utils.PrintLn("You have delivered the correct order!", ETextColor.Green);
+            inBar = false;
+            successfullyServed = true;
             return true;
         }
 
@@ -76,6 +75,14 @@ namespace A3
         public bool GetIfInBar()
         {
             return inBar;
+        }
+
+        /// <summary>
+        /// Returns true if customer was successfully served
+        /// </summary>
+        public bool GetSuccessfullyServed()
+        {
+            return successfullyServed;
         }
 
         #endregion

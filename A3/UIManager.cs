@@ -1,6 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
-
+﻿
 namespace A3
 {
     public class UIManager
@@ -27,9 +25,9 @@ namespace A3
 
             ==============================================================================================
 
-            Press ENTER to start the game...
-
             """);
+            
+            Utils.EmptyInput("Press ENTER to start the game...", ETextColor.Blue);
         }
 
         /// <summary>
@@ -56,7 +54,7 @@ namespace A3
         {
             switch (level)
             {
-                case 0: /// If the level is 0, the cup is empty
+                case 0: // If the level is 0, the cup is empty
                    Console.WriteLine("""
                     \           /
                      \         /
@@ -66,7 +64,7 @@ namespace A3
                     """);
                     break;
 
-                case 1: /// If the level is 1, the cup has just one ingredient
+                case 1: // If the level is 1, the cup has just one ingredient
                     Console.WriteLine("""
                      \           /
                       \         /
@@ -75,7 +73,7 @@ namespace A3
                          \___/ 
                     """);
                     break;
-                case 2: /// If the level is 2, the cup has two ingredients
+                case 2: // If the level is 2, the cup has two ingredients
                     Console.WriteLine("""
                     \           /
                      \         /
@@ -84,7 +82,7 @@ namespace A3
                         \___/ 
                     """);
                     break;
-                case 3: /// If the level is 3, the cup is full
+                case 3: // If the level is 3, the cup is full
                     Console.WriteLine("""
                     \           /
                      \---------/
@@ -93,7 +91,7 @@ namespace A3
                         \___/ 
                     """);
                     break;
-                default: /// If the's any other value, it's invalid
+                default: // If the's any other value, it's invalid
                     Console.WriteLine("Invalid cup level.");
                     break;
             }
@@ -102,21 +100,21 @@ namespace A3
         /// <summary>
         /// Helper method that prints the recipe cards of the three customers
         /// </summary>
-        /// The method receives three lists of ingredients and a list of mood levels, one for each customer
-        public void PrintRecipe(List<EIngredient> ingredients1, List<EIngredient> ingredients2, List<EIngredient> ingredients3,
-            List<int> moods)
+        public void PrintOrders(List<EIngredient> orderLists, List<int> moods)
         {
+            // The method receives three lists of ingredients and a list of mood levels, one for each customer
+            
             Console.WriteLine($"""
              ________________________________        ________________________________         ________________________________
             |                                |      |                                |       |                                |
             |{Center(PrintEmotion(moods[0]),32)}|      |{Center(PrintEmotion(moods[1]),32)}|       |{Center(PrintEmotion(moods[2]),32)}|
             |                                |      |                                |       |                                |
             |                                |      |                                |       |                                |
-            |        1.  {ingredients1[0],-20}|      |        1.  {ingredients2[0],-20}|       |        1.  {ingredients3[0],-20}|
+            |        1.  {orderLists[0],-20}|      |        1.  {orderLists[3],-20}|       |        1.  {orderLists[6],-20}|
             |                                |      |                                |       |                                |
-            |        2.  {ingredients1[1],-20}|      |        2.  {ingredients2[1],-20}|       |        1.  {ingredients3[1],-20}|
+            |        2.  {orderLists[1],-20}|      |        2.  {orderLists[4],-20}|       |        2.  {orderLists[7],-20}|
             |                                |      |                                |       |                                |
-            |        3.  {ingredients1[2],-20}|      |        3.  {ingredients2[2],-20}|       |        3.  {ingredients3[2],-20}|
+            |        3.  {orderLists[2],-20}|      |        3.  {orderLists[5],-20}|       |        3.  {orderLists[8],-20}|
             |                                |      |                                |       |                                | 
             |________________________________|      |________________________________|       |________________________________|
             """);
@@ -127,10 +125,10 @@ namespace A3
         /// </summary>
         public string PrintEmotion(int moodLevel)
         {
-            if (moodLevel == 3) return ":)"; /// If the mood is 3, the client is happy
-            else if (moodLevel == 2)return ":|"; /// If the mood is 2, the client is neutral
-            else if (moodLevel == 1) return ">:("; /// If the mood is 1, the client is angry
-            else return "X("; /// If the mood is 0, the client is very angry and is now gone
+            if (moodLevel == 3) return ":)"; // If the mood is 3, the client is happy
+            else if (moodLevel == 2)return ":|"; // If the mood is 2, the client is neutral
+            else if (moodLevel == 1) return ">:("; // If the mood is 1, the client is angry
+            else return "X("; // If the mood is 0, the client is very angry and is now gone
         }
 
         /// <summary>
