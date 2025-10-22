@@ -1,10 +1,38 @@
-﻿using System;
-using System.Xml.Serialization;
-
+﻿
 namespace A3
 {
     public class UIManager
     {
+        public void PrintInstruction()
+        {
+            Console.WriteLine($"""
+            ==============================================================================================
+                                                 INSTRUCTIONS
+            
+                     Congratulations on your new job as a bartender at the bar "The Happy Cup"!
+
+
+
+            Your goal is to serve drinks to your customers based on their recipe cards.
+
+            Each recipe card contains 3 ingredients that must be added to the cup in order to satisfy the 
+            customer, they will be appearing 3 at a time for 5 seconds. You have to select and memorize 
+            the ingredients for a recipe and then add them to the cup one by one to create the drink.
+
+            Each customer has a mood level that will be affected by how well you serve them.
+
+            If 3 customers leave angry, you'll be fired!
+
+            ==============================================================================================
+
+            """);
+            
+            Utils.EmptyInput("Press ENTER to start the game...", ETextColor.Blue);
+        }
+
+        /// <summary>
+        /// Helper method that prints the ingredient selection menu
+        /// </summary>
         public void PrintMenu()
         {
             Console.WriteLine("""
@@ -19,11 +47,14 @@ namespace A3
             """);
         }
 
+        /// <summary>
+        /// Helper method that prints the cup depending on its current level to indicate how full it is
+        /// </summary>
         public void PrintCup(int level)
         {
             switch (level)
             {
-                case 0:
+                case 0: // If the level is 0, the cup is empty
                    Console.WriteLine("""
                     \           /
                      \         /
@@ -33,7 +64,7 @@ namespace A3
                     """);
                     break;
 
-                case 1:
+                case 1: // If the level is 1, the cup has just one ingredient
                     Console.WriteLine("""
                      \           /
                       \         /
@@ -42,7 +73,7 @@ namespace A3
                          \___/ 
                     """);
                     break;
-                case 2:
+                case 2: // If the level is 2, the cup has two ingredients
                     Console.WriteLine("""
                     \           /
                      \         /
@@ -51,7 +82,7 @@ namespace A3
                         \___/ 
                     """);
                     break;
-                case 3:
+                case 3: // If the level is 3, the cup is full
                     Console.WriteLine("""
                     \           /
                      \---------/
@@ -60,37 +91,55 @@ namespace A3
                         \___/ 
                     """);
                     break;
-                default:
+                default: // If the's any other value, it's invalid
                     Console.WriteLine("Invalid cup level.");
                     break;
             }
         }
 
-        //public void PrintAllCups()
-        //{
-        //    for (int level = 0; level <= 3; level++)
-        //    {
-        //        Console.WriteLine($"=== Cup level {level} ===");
-        //        PrintCup(level);
-        //    }
-        //}
-
-        public void PrintRecipe(List<EIngredient> ingredients) // TODO: agregar nivel de felicidad del cliente
+        /// <summary>
+        /// Helper method that prints the recipe cards of the three customers
+        /// </summary>
+        public void PrintOrders(List<EIngredient> orderLists, List<int> moods)
         {
-            //Console.WriteLine($"""
-            // ________________________________
-            //|                                |  
-            //|            Feliz               | 
-            //|                                | 
-            //|                                | 
-            //|     1.  {ingredients[0]}\t| 
-            //|                                | 
-            //|     2.  {ingredients[1]}\t| 
-            //|                                | 
-            //|     3.  {ingredients[2]}\t| 
-            //|                                | 
-            //---------------------------------
-            //""");
+            // The method receives three lists of ingredients and a list of mood levels, one for each customer
+            
+            Console.WriteLine($"""
+             ________________________________        ________________________________         ________________________________
+            |                                |      |                                |       |                                |
+            |{Center(PrintEmotion(moods[0]),32)}|      |{Center(PrintEmotion(moods[1]),32)}|       |{Center(PrintEmotion(moods[2]),32)}|
+            |                                |      |                                |       |                                |
+            |                                |      |                                |       |                                |
+            |        1.  {orderLists[0],-20}|      |        1.  {orderLists[3],-20}|       |        1.  {orderLists[6],-20}|
+            |                                |      |                                |       |                                |
+            |        2.  {orderLists[1],-20}|      |        2.  {orderLists[4],-20}|       |        2.  {orderLists[7],-20}|
+            |                                |      |                                |       |                                |
+            |        3.  {orderLists[2],-20}|      |        3.  {orderLists[5],-20}|       |        3.  {orderLists[8],-20}|
+            |                                |      |                                |       |                                | 
+            |________________________________|      |________________________________|       |________________________________|
+            """);
+        }
+
+        /// <summary>
+        /// Helper method that returns an emotion string depending on the mood level provided
+        /// </summary>
+        public string PrintEmotion(int moodLevel)
+        {
+            if (moodLevel == 3) return ":)"; // If the mood is 3, the client is happy
+            else if (moodLevel == 2)return ":|"; // If the mood is 2, the client is neutral
+            else if (moodLevel == 1) return ">:("; // If the mood is 1, the client is angry
+            else return "X("; // If the mood is 0, the client is very angry and is now gone
+        }
+
+        /// <summary>
+        /// Helper method that centers a string within a given width
+        /// </summary>
+        static string Center(string s, int width)
+        {
+            if (string.IsNullOrEmpty(s)) return new string(' ', width);
+            if (s.Length >= width) return s.Substring(0, width);
+            int left = (width - s.Length) / 2;
+            return new string(' ', left) + s + new string(' ', width - left - s.Length);
         }
     }
 }

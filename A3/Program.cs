@@ -9,12 +9,13 @@ namespace A3
     {
         static void Main(string[] args)
         {
-            GameManager gameManager = new GameManager();
+            UIManager uiManager = new UIManager();
+            GameManager gameManager = new GameManager(uiManager);
             bool gameOn = true;
 
             while (gameOn) 
             {
-                // TODO Print introduction to game an tutorial
+                uiManager.PrintInstruction();
 
                 // Start game loop
                 while (!gameManager.GetGameOver())

@@ -1,22 +1,22 @@
-﻿using System;
-using System.Reflection;
-
-namespace A3
+﻿namespace A3
 {
     public class GameManager
     {
         private Bartender bartender; // bartender instance
         private Inventory inventory; // inventory instance
+        private UIManager uiManager;
 
-        private int score = 0;
-        private const int angryCustomerLimit = 5; // The limit that marks the amount of angry customers a player can have before losing
-        private int angryCustomerCounter = 0; // The current amount of angry customers a player has in their record
+        private int score;
+        private const int AngryCustomerLimit = 5; // The limit that marks the amount of angry customers a player can have before losing
+        private int angryCustomerCounter; // The current amount of angry customers a player has in their record
 
-        private bool isGameOver = false;
+        private bool isGameOver;
 
-        public GameManager()
+        // Constructor
+        public GameManager(UIManager uiManager)
         {
             inventory = new Inventory();
+            this.uiManager = uiManager;
 
             var startingCustomers = new Customer[3];
             for (int i = 0; i < startingCustomers.Length; i++)
@@ -32,32 +32,79 @@ namespace A3
         /// </summary>
         public void GameLoop()
         {
-            //while (true)
-            //{
-            //}
+            while (true)
+            {
+                // Print current orders
+                Utils.PrintLn("Your current orders:", ETextColor.Yellow);
+                Utils.PrintEmptyLn();
+
+                var customers = bartender.GetCustomers();
+                var ingredients = new List<EIngredient>();
+                var moods = new List<int>();
+                foreach (var customer in customers)
+                {
+                    ingredients.AddRange(customer.GetOrder().GetRequiredIngredients());
+                    moods.Add(customer.GetMoodLevel());
+                }
+                
+                uiManager.PrintOrders(ingredients, moods);
+                Utils.PrintEmptyLn();
+                
+                // Wait 5 seconds, then clear console
+                Thread.Sleep(5000);
+                Console.Clear();
+                Thread.Sleep(500);
+
+                // Select the customer to serve
+                var selectedCustomer = Utils.Input("User please select the customer to serve. Type '1', '2' or '3'.", ETextColor.Yellow, 1, 3);
+                var actualSelectedCustomer = selectedCustomer - 1;
+                bartender.SelectCustomer(actualSelectedCustomer);
+                
+                // Make a drink
+                bartender.MakeDrink(bartender.GetCustomers()[actualSelectedCustomer].GetOrder(), inventory, uiManager);
+                
+                // Deliver the drink
+                var bSuccess = bartender.DeliverDrink();
+                if (bSuccess) AddToScore(500);
+                Utils.PrintLn("Your score: " + score, ETextColor.Yellow);
+                
+                Utils.EmptyInput("Press ENTER to continue...", ETextColor.Blue);
+
+                // Decrease mood level of all other costumers
+                foreach (var customer in customers)
+                {
+                    if (customer != customers[actualSelectedCustomer])
+                        customer.DecreaseMoodLevel();
+                }
+                TryAddNewCustomer();
+                
+                // End the game if angry customer counter is at limit
+                if (angryCustomerCounter < AngryCustomerLimit) continue;
+                FireBartender();
+                break;
+            }
         }
 
         /// <summary>
         /// Returns a new customer instance
         /// </summary>
-        /// <returns></returns>
-        public bool TryAddNewCustomer(int index)
+        private void TryAddNewCustomer()
         {
-            bool bSucess = false;
-
             var customers = bartender.GetCustomers();
 
             for (int i = 0; i < customers.Length; i++) 
             {
                 if (!customers[i].GetIfInBar())
                 {
-                    bartender.ReplaceCustomer(new Customer(inventory), index);
-                    AddToAngryCustomers();
-                    bSucess = true;
+                    bartender.ReplaceCustomer(new Customer(inventory), i);
+                    
+                    // If not served correctly, add to Angry Customers
+                    if (!customers[i].GetSuccessfullyServed())
+                    {
+                        AddToAngryCustomers();
+                    }
                 }
             }
-
-            return bSucess;
         }
 
         #region Utility Functions
@@ -89,8 +136,7 @@ namespace A3
         /// <summary>
         /// Adds a defined amount to the angry customer counter, can't be less or equal to 0
         /// </summary>
-        /// <param name="angryCustomersToAdd"></param>
-        public void AddToAngryCustomers()
+        private void AddToAngryCustomers()
         {
             angryCustomerCounter += 1;
         }
@@ -101,13 +147,12 @@ namespace A3
         /// <returns></returns>
         public int GetAngryCustomerLimit()
         {
-            return angryCustomerLimit;
+            return AngryCustomerLimit;
         }
 
         /// <summary>
         /// Returns the Angry Customer Count
         /// </summary>
-        /// <returns></returns>
         public int GetAngryCustomerCounter()
         {
             return angryCustomerCounter;
@@ -116,17 +161,15 @@ namespace A3
         /// <summary>
         /// Adds the given value to score
         /// </summary>
-        /// <param name="scoreToAdd"></param>
         public void AddToScore(int scoreToAdd)
         {
             if (scoreToAdd <= 0) scoreToAdd = 0;
-            score += score;
+            score += scoreToAdd;
         }
 
         /// <summary>
         /// Returns actual game score
         /// </summary>
-        /// <returns></returns>
         public int GetScore()
         {
             return score;
